@@ -12,6 +12,7 @@ import pickle
 import numpy as np
 import PIL.Image
 import dnnlib
+from dnnlib.utils import *
 import dnnlib.tflib as tflib
 import config
 import argparse
@@ -32,34 +33,13 @@ def get_args():
   return args
 
 
-def legacy_url_loader(url, cache_dir):
-    with dnnlib.util.open_url(url, cache_dir=cache_dir) as f:
-        return pickle.load(f)
-
-    
-def network_loader():
-    args = get_args()
-    
-    # Load pre-trained network.
-    if args.url_path:
-        print('Loading from : %s' % args.url_path )
-        return legacy_url_loader(args.url_path, config.cache_dir)
-    
-    elif args.file_path:
-        print('Loading from file at : %s' % args.file_path)
-        with open(args.file_path, 'rb') as f:
-            return pickle.load(f) 
-        
-    else:
-        print('Loading original pre-trained model.')
-        return legacy_url_loader(url, config.cache_dir)
-
 def main():
     # Initialize TensorFlow.
     tflib.init_tf()
     
+    args = get_args()
     # Option to load from disk or custom URL
-    _G, _D, Gs = network_loader()
+    _G, _D, Gs = network_loader(url_path = args.url_path, file_path = args.file_path)
     # _G = Instantaneous snapshot of the generator. Mainly useful for resuming a previous training run.
     # _D = Instantaneous snapshot of the discriminator. Mainly useful for resuming a previous training run.
     # Gs = Long-term average of the generator. Yields higher-quality results than the instantaneous snapshot.
