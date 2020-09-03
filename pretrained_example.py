@@ -32,8 +32,8 @@ def get_args():
   return args
 
 
-def legacy_url_loader(url, config.cache_dir):
-    with dnnlib.util.open_url(url, cache_dir=config.cache_dir) as f:
+def legacy_url_loader(url, cache_dir):
+    with dnnlib.util.open_url(url, cache_dir=cache_dir) as f:
         return pickle.load(f)
 
     
