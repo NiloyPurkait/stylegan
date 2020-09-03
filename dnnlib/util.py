@@ -403,3 +403,27 @@ def open_url(url: str, cache_dir: str = None, num_attempts: int = 10, verbose: b
 
     # Return data as file object.
     return io.BytesIO(url_data)
+
+
+def legacy_url_loader(url, cache_dir):
+    with open_url(url, cache_dir=cache_dir) as f:
+        return pickle.load(f)
+
+
+def network_loader(*kwargs):
+    url_path = kwargs.get('url_path')
+    file_path = kwargs.get('file_path')
+    
+    # Load pre-trained network.
+    if url_path:
+        print('Loading from : %s' % args.url_path )
+        return legacy_url_loader(args.url_path, config.cache_dir)
+    
+    elif file_path:
+        print('Loading from file at : %s' % args.file_path)
+        with open(args.file_path, 'rb') as f:
+            return pickle.load(f) 
+        
+    else:
+        print('Loading original pre-trained model.')
+        return legacy_url_loader(url, config.cache_dir)
