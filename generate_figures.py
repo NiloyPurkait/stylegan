@@ -14,6 +14,22 @@ import PIL.Image
 import dnnlib
 import dnnlib.tflib as tflib
 import config
+import argparse
+from dnnlib.util import *
+
+def get_args():
+  parser = argparse.ArgumentParser(description="Main Arguments")
+
+  parser.add_argument(
+    '--file_path', default='', type=str, required=False,
+    help='Path to training data')
+    
+  parser.add_argument(
+    '--url_path', default='', type=str, required=False,
+    help='Path to training data')
+
+  args = parser.parse_args()
+  return args
 
 #----------------------------------------------------------------------------
 # Helpers for loading and using pre-trained generators.
@@ -30,8 +46,9 @@ _Gs_cache = dict()
 
 def load_Gs(url):
     if url not in _Gs_cache:
-        with dnnlib.util.open_url(url, cache_dir=config.cache_dir) as f:
-            _G, _D, Gs = pickle.load(f)
+        args = get_args()
+        # Option to load from disk or custom URL
+        _G, _D, Gs = network_loader(url_path = args.url_path, file_path = args.file_path)
         _Gs_cache[url] = Gs
     return _Gs_cache[url]
 
