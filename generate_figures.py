@@ -21,11 +21,11 @@ import config
 #----------------------------------------------------------------------------
 # Helpers for loading and using pre-trained generators.
 
-url_ffhq        = 'https://drive.google.com/uc?id=1MEGjdvVpUsu1jB4zrXZN7Y4kBBOzizDQ' # karras2019stylegan-ffhq-1024x1024.pkl
-url_celebahq    = 'https://drive.google.com/uc?id=1MGqJl28pN4t7SAtSrPdSRJSQJqahkzUf' # karras2019stylegan-celebahq-1024x1024.pkl
-url_bedrooms    = 'https://drive.google.com/uc?id=1MOSKeGF0FJcivpBI7s63V9YHloUTORiF' # karras2019stylegan-bedrooms-256x256.pkl
-url_cars        = 'https://drive.google.com/uc?id=1MJ6iCfNtMIRicihwRorsM3b7mmtmK9c3' # karras2019stylegan-cars-512x384.pkl
-url_cats        = 'https://drive.google.com/uc?id=1MQywl0FNt6lHu8E_EUqnRbviagS7fbiJ' # karras2019stylegan-cats-256x256.pkl
+url_ffhq        = '/content/gdrive/My Drive/stylegan_pretrained/stylegan-ffhq-1024x1024.pkl' # karras2019stylegan-ffhq-1024x1024.pkl
+url_celebahq    = '/content/gdrive/My Drive/stylegan_pretrained/stylegan-celebahq-1024x1024.pkl' # karras2019stylegan-celebahq-1024x1024.pkl
+url_bedrooms    = '/content/gdrive/My Drive/stylegan_pretrained/stylegan-bedrooms-256x256.pkl' # karras2019stylegan-bedrooms-256x256.pkl
+url_cars        = '/content/gdrive/My Drive/stylegan_pretrained/stylegan-cars-512x384.pkl' # karras2019stylegan-cars-512x384.pkl
+url_cats        = '/content/gdrive/My Drive/stylegan_pretrained/stylegan-cats-256x256.pkl' # karras2019stylegan-cats-256x256.pkl
 
 synthesis_kwargs = dict(output_transform=dict(func=tflib.convert_images_to_uint8, nchw_to_nhwc=True), minibatch_size=8)
 
@@ -33,8 +33,7 @@ _Gs_cache = dict()
 
 def load_Gs(url):
     if url not in _Gs_cache:
-        with dnnlib.util.open_url(url, cache_dir=config.cache_dir) as f:
-            _G, _D, Gs = pickle.load(f)
+        _G, _D, Gs = network_loader(file_path=url)
         _Gs_cache[url] = Gs
     return _Gs_cache[url]
 #----------------------------------------------------------------------------
