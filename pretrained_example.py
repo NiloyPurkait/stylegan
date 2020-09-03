@@ -14,18 +14,55 @@ import PIL.Image
 import dnnlib
 import dnnlib.tflib as tflib
 import config
+import argparse
+
+
+def get_args():
+  parser = argparse.ArgumentParser(description="Main Arguments")
+
+  parser.add_argument(
+    '--file_path', default='', type=str, required=False,
+    help='Path to training data')
+    
+  parser.add_argument(
+    '--url_path', default='', type=str, required=False,
+    help='Path to training data')
+
+  args = parser.parse_args()
+  return args
+
+
+def legacy_url_loader(url, config.cache_dir):
+    with dnnlib.util.open_url(url, cache_dir=config.cache_dir) as f:
+        return pickle.load(f)
+
+    
+def network_loader():
+    args = get_args()
+    
+    # Load pre-trained network.
+    if args.url_path:
+        print('Loading from : %s' % args.url_path )
+        return legacy_url_loader(args.url_path, config.cache_dir)
+    
+    elif args.file_path:
+        print('Loading from file at : %s' % args.file_path)
+        with open(args.file_path, 'rb') as f:
+            return pickle.load(f) 
+        
+    else:
+        print('Loading original pre-trained model.')
+        return legacy_url_loader(url, config.cache_dir)
 
 def main():
     # Initialize TensorFlow.
     tflib.init_tf()
-
-    # Load pre-trained network.
-    url = 'https://drive.google.com/uc?id=1MEGjdvVpUsu1jB4zrXZN7Y4kBBOzizDQ' # karras2019stylegan-ffhq-1024x1024.pkl
-    with dnnlib.util.open_url(url, cache_dir=config.cache_dir) as f:
-        _G, _D, Gs = pickle.load(f)
-        # _G = Instantaneous snapshot of the generator. Mainly useful for resuming a previous training run.
-        # _D = Instantaneous snapshot of the discriminator. Mainly useful for resuming a previous training run.
-        # Gs = Long-term average of the generator. Yields higher-quality results than the instantaneous snapshot.
+    
+    # Option to load from disk or custom URL
+    _G, _D, Gs = network_loader()
+    # _G = Instantaneous snapshot of the generator. Mainly useful for resuming a previous training run.
+    # _D = Instantaneous snapshot of the discriminator. Mainly useful for resuming a previous training run.
+    # Gs = Long-term average of the generator. Yields higher-quality results than the instantaneous snapshot.
 
     # Print network details.
     Gs.print_layers()
