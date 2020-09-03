@@ -12,7 +12,7 @@ import pickle
 import numpy as np
 import PIL.Image
 import dnnlib
-from dnnlib.utils import *
+from dnnlib.util import *
 import dnnlib.tflib as tflib
 import config
 
