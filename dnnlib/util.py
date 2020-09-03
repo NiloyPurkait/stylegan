@@ -414,12 +414,12 @@ def network_loader(url_path=None, file_path=None):
 
     # Load pre-trained network.
     if url_path:
-        print('Loading from : %s' % args.url_path )
-        return legacy_url_loader(args.url_path, config.cache_dir)
+        print('Loading from : %s' % url_path )
+        return legacy_url_loader(url_path, config.cache_dir)
     
     elif file_path:
-        print('Loading from file at : %s' % args.file_path)
-        with open(args.file_path, 'rb') as f:
+        print('Loading from file at : %s' % file_path)
+        with open(file_path, 'rb') as f:
             return pickle.load(f) 
         
     else:
