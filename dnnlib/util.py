@@ -410,10 +410,8 @@ def legacy_url_loader(url, cache_dir):
         return pickle.load(f)
 
 
-def network_loader(*kwargs):
-    url_path = kwargs.get('url_path')
-    file_path = kwargs.get('file_path')
-    
+def network_loader(url_path=None, file_path=None):
+
     # Load pre-trained network.
     if url_path:
         print('Loading from : %s' % args.url_path )
